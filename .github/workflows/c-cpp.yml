@@ -8,16 +8,36 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          base-devel
+          mingw-w64-x86_64-toolchain
+          autoconf
+          automake
+          make
+          libtool
+
+    - name: Configure
+      shell: msys2 {0}
       run: ./configure
-    - name: make
+
+    - name: Build
+      shell: msys2 {0}
       run: make
-    - name: make check
+
+    - name: Run checks
+      shell: msys2 {0}
       run: make check
-    - name: make distcheck
+
+    - name: Run distcheck
+      shell: msys2 {0}
       run: make distcheck
